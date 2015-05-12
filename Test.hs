@@ -1,6 +1,7 @@
 module Test where
 
 import Control.Applicative
+import Data.List
 import Test.HUnit
 import Test.QuickCheck
 import Text.ParserCombinators.Parsec
@@ -12,6 +13,9 @@ ptest msg prsr testcase = TestCase . either (assertFailure . show)
                                             (assertEqual msg $ snd testcase)
                              $ (show <$> parse prsr "" (fst testcase))
 
+ptests msg prsr testcases = map (ptest msg prsr) testcases
+
+
 simpleExample = (
      unlines [
      "Recipe Mocha\r",
@@ -20,17 +24,19 @@ simpleExample = (
      "- 60`mL Espresso\r"],
      "Recipe {recipeName = \"Mocha\", ingredients = [Ingredient {volume = 30, measure = \"ml\", ingredientName = \"Steamed_Milk\", index = Nothing},Ingredient {volume = 60, measure = \"ml\", ingredientName = \"Chocolate\", index = Nothing},Ingredient {volume = 60, measure = \"ml\", ingredientName = \"Espresso\", index = Nothing}]}")
 
-test_simpleInput = ptest "for the first recipe in the language spec" 
+test_simpleInput = ptests "for the first recipe in the language spec" 
                          recipe 
-                         simpleExample
+                         [simpleExample]
 
-test_ingredient = ptest "for valid single non-indexed ingredient" 
+test_ingredient = ptests "for valid single non-indexed ingredient" 
                          ingredient 
-                         ( "- 30`mL Steamed_Milk\r\n", "Ingredient {volume = 30, measure = \"ml\", ingredientName = \"Steamed_Milk\", index = Nothing}")
+                         [( "- 30`mL Steamed_Milk\r\n", "Ingredient {volume = 30, measure = \"ml\", ingredientName = \"Steamed_Milk\", index = Nothing}")]
 
-test_ingredientIndexed = ptest "for valid single indexed ingredient" 
+test_ingredientIndexed = ptests "for valid single indexed ingredient" 
                          ingredient
-                         ("1- 30`mL Steamed_Milk\r", "Ingredient {volume = 30, measure = \"ml\", ingredientName = \"Steamed_Milk\", index = 1}")
+                         [("1- 30`mL Steamed_Milk\r\n", "Ingredient {volume = 30, measure = \"ml\", ingredientName = \"Steamed_Milk\", index = Just 1}"),
+                          ("2- 30`mL Steamed_Milk\r\n", "Ingredient {volume = 30, measure = \"ml\", ingredientName = \"Steamed_Milk\", index = Just 2}")]
+
 
      
 numberedIngredients = (unlines [
@@ -40,9 +46,11 @@ numberedIngredients = (unlines [
      "3- 30`mL Milk\r"],
      "")
 ----
-tests = TestList [TestLabel "Recipe, simple" test_simpleInput
-                 ,TestLabel "Ingredient, non-indexed" test_ingredient
-                 ,TestLabel "Ingredient, indexed" test_ingredientIndexed
-                 ]
+
+-- map and concat since each of the "test_testName" are a list of testcases
+tests = TestList $ concat [map (TestLabel "Recipe, simple") test_simpleInput
+                          ,map (TestLabel "Ingredient, non-indexed") test_ingredient
+                          ,map (TestLabel "Ingredient, indexed") test_ingredientIndexed
+                          ]
 
 runtests = runTestTT tests
