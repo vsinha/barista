@@ -33,8 +33,7 @@ p <||> q = try p <|> q
 
 -- Parse a measurement unit
 measureP :: Parser String
-measureP = (string "ml" *> (pure "ml")) -- (TODO how to compress these into 1 line)
-      <||> (string "mL" *> (pure "ml")) -- both capital and lower case "L" parse to "ml"
+measureP = string "ml" <||> string "mL" *> pure "ml"
 
 {-
 ingredientIndex :: Parser (Maybe Int)
