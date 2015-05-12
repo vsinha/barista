@@ -38,8 +38,8 @@ skipWhitespace p = ws *> p <* ws
 p <||> q = try p <|> q
 
 -- Parse a measurement unit
-measureP :: Parser String
-measureP = string "ml" <||> string "mL" *> pure "ml"
+measureP :: Parser Measure
+measureP = string "ml" <||> string "mL" *> pure Milli
 
 ingredientIndexP :: Parser (Maybe Int)
 ingredientIndexP = Just <$> int

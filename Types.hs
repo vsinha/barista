@@ -13,8 +13,9 @@ data Ingredient = Ingredient
      , annotations :: (Maybe [Annotation])
      } deriving Show
 
-type Measure = String
---type Annotation = String
+data Measure = Milli 
+  deriving (Eq, Ord, Enum, Show)
+
 data Annotation = Mix | MixSource | Hold | AspirateSpeed | DispenseSpeed 
   deriving (Eq, Ord, Enum, Show)
 

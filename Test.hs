@@ -21,7 +21,7 @@ simpleExample = (
      "- 30`mL Steamed_Milk\r",
      "- 60`mL Chocolate\r",
      "- 60`mL Espresso\r"],
-     "Recipe {recipeName = \"Mocha\", ingredients = [Ingredient {volume = 30, measure = \"ml\", ingredientName = \"Steamed_Milk\", index = Nothing, annotations = Nothing},Ingredient {volume = 60, measure = \"ml\", ingredientName = \"Chocolate\", index = Nothing, annotations = Nothing},Ingredient {volume = 60, measure = \"ml\", ingredientName = \"Espresso\", index = Nothing, annotations = Nothing}]}")
+     "Recipe {recipeName = \"Mocha\", ingredients = [Ingredient {volume = 30, measure = Milli, ingredientName = \"Steamed_Milk\", index = Nothing, annotations = Nothing},Ingredient {volume = 60, measure = Milli, ingredientName = \"Chocolate\", index = Nothing, annotations = Nothing},Ingredient {volume = 60, measure = Milli, ingredientName = \"Espresso\", index = Nothing, annotations = Nothing}]}")
 
 test_simpleInput = ptests "for the first recipe in the language spec" 
                           recipe 
@@ -29,14 +29,14 @@ test_simpleInput = ptests "for the first recipe in the language spec"
 
 test_ingredient = ptests "for valid single non-indexed ingredient" 
                          ingredient 
-                         [( "- 30`mL Steamed_Milk\r\n", "Ingredient {volume = 30, measure = \"ml\", ingredientName = \"Steamed_Milk\", index = Nothing, annotations = Nothing}"),
-                          ( "- 30`mL Steamed_Milk;", "Ingredient {volume = 30, measure = \"ml\", ingredientName = \"Steamed_Milk\", index = Nothing, annotations = Nothing}")]
+                         [( "- 30`mL Steamed_Milk\r\n", "Ingredient {volume = 30, measure = Milli, ingredientName = \"Steamed_Milk\", index = Nothing, annotations = Nothing}"),
+                          ( "- 30`mL Steamed_Milk;", "Ingredient {volume = 30, measure = Milli, ingredientName = \"Steamed_Milk\", index = Nothing, annotations = Nothing}")]
 
 
 test_ingredientIndexed = ptests "for valid single indexed ingredient" 
                          ingredient
-                         [("1- 30`mL Steamed_Milk\r\n", "Ingredient {volume = 30, measure = \"ml\", ingredientName = \"Steamed_Milk\", index = Just 1, annotations = Nothing}"),
-                          ("2- 30`mL Steamed_Milk\r\n", "Ingredient {volume = 30, measure = \"ml\", ingredientName = \"Steamed_Milk\", index = Just 2, annotations = Nothing}")]
+                         [("1- 30`mL Steamed_Milk\r\n", "Ingredient {volume = 30, measure = Milli, ingredientName = \"Steamed_Milk\", index = Just 1, annotations = Nothing}"),
+                          ("2- 30`mL Steamed_Milk\r\n", "Ingredient {volume = 30, measure = Milli, ingredientName = \"Steamed_Milk\", index = Just 2, annotations = Nothing}")]
 
 {-
 -- TODO figure out how to ensure we fail on this
@@ -47,8 +47,8 @@ test_ingredientNoEOL = ptests "For invalid single indexed ingredient"
 
 test_ingredientAnnotated = ptests "for an ingredient with an annotation"
                          ingredient
-                         [( "1- 30`mL Steamed_Milk [mix]\r\n", "Ingredient {volume = 30, measure = \"ml\", ingredientName = \"Steamed_Milk\", index = Just 1, annotations = Just [Mix]}"),
-                          ( "- 60`mL Espresso [mix, hold]\r\n", "Ingredient {volume = 60, measure = \"ml\", ingredientName = \"Espresso\", index = Nothing, annotations = Just [Mix,Hold]}") ]
+                         [( "1- 30`mL Steamed_Milk [mix]\r\n", "Ingredient {volume = 30, measure = Milli, ingredientName = \"Steamed_Milk\", index = Just 1, annotations = Just [Mix]}"),
+                          ( "- 60`mL Espresso [mix, hold]\r\n", "Ingredient {volume = 60, measure = Milli, ingredientName = \"Espresso\", index = Nothing, annotations = Just [Mix,Hold]}") ]
 
 
      
