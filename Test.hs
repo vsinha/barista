@@ -48,8 +48,7 @@ test_ingredientNoEOL = ptests "For invalid single indexed ingredient"
 test_ingredientAnnotated = ptests "for an ingredient with an annotation"
                          ingredient
                          [( "1- 30`mL Steamed_Milk [mix]\r\n", "Ingredient {volume = 30, measure = Milli, ingredientName = \"Steamed_Milk\", index = Just 1, annotations = Just [Mix]}"),
-                          ( "- 60`mL Espresso [mix, hold]\r\n", "Ingredient {volume = 60, measure = Milli, ingredientName = \"Espresso\", index = Nothing, annotations = Just [Mix,Hold]}") ]
-
+                          ( "- 60`mL Espresso [mix, mix_source, hold , aspirate_speed, dispense_speed]\r\n", "Ingredient {volume = 60, measure = Milli, ingredientName = \"Espresso\", index = Nothing, annotations = Just [Mix,MixSource,Hold,AspirateSpeed,DispenseSpeed]}") ] 
 
      
 numberedIngredients = (unlines [
