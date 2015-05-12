@@ -15,7 +15,6 @@ ptest msg prsr testcase = TestCase . either (assertFailure . show)
 
 ptests msg prsr testcases = map (ptest msg prsr) testcases
 
-
 simpleExample = (
      unlines [
      "Recipe Mocha\r",
@@ -30,19 +29,26 @@ test_simpleInput = ptests "for the first recipe in the language spec"
 
 test_ingredient = ptests "for valid single non-indexed ingredient" 
                          ingredient 
-                         [( "- 30`mL Steamed_Milk\r\n", "Ingredient {volume = 30, measure = \"ml\", ingredientName = \"Steamed_Milk\", index = Nothing, annotations = Nothing}")]
+                         [( "- 30`mL Steamed_Milk\r\n", "Ingredient {volume = 30, measure = \"ml\", ingredientName = \"Steamed_Milk\", index = Nothing, annotations = Nothing}"),
+                          ( "- 30`mL Steamed_Milk;", "Ingredient {volume = 30, measure = \"ml\", ingredientName = \"Steamed_Milk\", index = Nothing, annotations = Nothing}")]
+
 
 test_ingredientIndexed = ptests "for valid single indexed ingredient" 
                          ingredient
                          [("1- 30`mL Steamed_Milk\r\n", "Ingredient {volume = 30, measure = \"ml\", ingredientName = \"Steamed_Milk\", index = Just 1, annotations = Nothing}"),
                           ("2- 30`mL Steamed_Milk\r\n", "Ingredient {volume = 30, measure = \"ml\", ingredientName = \"Steamed_Milk\", index = Just 2, annotations = Nothing}")]
 
+{-
+-- TODO figure out how to ensure we fail on this
+test_ingredientNoEOL = ptests "For invalid single indexed ingredient" 
+                       ingredient
+                       [("1- 30`mL Steamed_Milk", "")] -- this should fail
+-}
+
 test_ingredientAnnotated = ptests "for an ingredient with an annotation"
                          ingredient
-                         [( "2- 60`mL Espresso [mix]\r\n", "Ingredient {volume = 30, measure = \"ml\", ingredientName = \"Steamed_Milk\", index = Just 1, annotations = Just [Mix]}"),
-                          ( "- 60`mL Espresso [mix, hold]\r\n", "Ingredient {volume = 30, measure = \"ml\", ingredientName = \"Steamed_Milk\", index = Just 1, annotations = Just [Mix, Hold]}")
-
-                         ]
+                         [( "1- 30`mL Steamed_Milk [mix]\r\n", "Ingredient {volume = 30, measure = \"ml\", ingredientName = \"Steamed_Milk\", index = Just 1, annotations = Just [Mix]}"),
+                          ( "- 60`mL Espresso [mix, hold]\r\n", "Ingredient {volume = 60, measure = \"ml\", ingredientName = \"Espresso\", index = Nothing, annotations = Just [Mix,Hold]}") ]
 
 
      
@@ -58,6 +64,7 @@ numberedIngredients = (unlines [
 tests = TestList $ concat [map (TestLabel "Recipe, simple") test_simpleInput
                           ,map (TestLabel "Ingredient, non-indexed") test_ingredient
                           ,map (TestLabel "Ingredient, indexed") test_ingredientIndexed
+                          ,map (TestLabel "Ingredient, annotated") test_ingredientAnnotated 
                           ]
 
 runtests = runTestTT tests

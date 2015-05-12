@@ -45,8 +45,16 @@ ingredientIndexP :: Parser (Maybe Int)
 ingredientIndexP = Just <$> int
                   <|> (pure Nothing)
 
+-- attempt to apply one or more of the string parsers, each separated by a single comma
 annotationP :: Parser (Maybe [Annotation])
-annotationP = (pure Nothing)
+annotationP = Just <$> ((between (char '[') (char ']')) $
+            sepEndBy (choice [(string "mix"            *> pure Mix)
+                             ,(string "mix_source"     *> pure MixSource)
+                             ,(string "hold"           *> pure Hold)
+                             ,(string "aspirate_speed" *> pure AspirateSpeed)
+                             ,(string "dispense_speed" *> pure DispenseSpeed)]) 
+      (skipWhitespace $ char ','))
+      <|> (pure Nothing)
 
 ingredient :: Parser Ingredient
 ingredient = do

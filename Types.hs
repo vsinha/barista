@@ -14,6 +14,7 @@ data Ingredient = Ingredient
      } deriving Show
 
 type Measure = String
-data Annotation = MixSource | Hold | AspirateSpeed | DispenseSpeed 
+--type Annotation = String
+data Annotation = Mix | MixSource | Hold | AspirateSpeed | DispenseSpeed 
   deriving (Eq, Ord, Enum, Show)
 
