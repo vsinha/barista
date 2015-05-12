@@ -41,11 +41,14 @@ p <||> q = try p <|> q
 measureP :: Parser Measure
 measureP = string "ml" <||> string "mL" *> pure Milli
 
+-- Parse the integer at the beginning of the line, if there is one
 ingredientIndexP :: Parser (Maybe Int)
 ingredientIndexP = Just <$> int
                   <|> (pure Nothing)
 
--- attempt to apply one or more of the string parsers, each separated by a single comma
+-- between square brackets [ ],
+-- attempt to apply one or more of the parsers for Annotation types, 
+-- each separated by a single comma an optional whitespace
 annotationP :: Parser (Maybe [Annotation])
 annotationP = Just <$> ((between (char '[') (char ']')) $
             sepEndBy (choice . map try $ [string "mix_source" *> pure MixSource, 
