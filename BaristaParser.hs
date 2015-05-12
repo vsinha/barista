@@ -8,6 +8,12 @@ import Control.Applicative hiding ((<|>), optional, many)
 ws :: Parser String
 ws = many (oneOf " ")
 
+-- EOL
+eol :: Parser ()
+eol = do many1 (oneOf "\n\r;")
+         return ()
+         <?> "end of line"
+
 -- Integrals
 int :: (Integral a, Read a) => Parser a
 int = read <$> many1 digit
@@ -51,14 +57,14 @@ ingredient = do
        measure <- skipWhitespace measureP
        ingredientName <- skipWhitespace keyword
        annotations <- annotationP
-       string "\r\n"
+       eol
        return $ Ingredient volume measure ingredientName index annotations
 
 recipe :: Parser Recipe
 recipe = do
        string "Recipe"
        title <- skipWhitespace keyword
-       string "\r\n"
+       eol
        ingredients <- many1 ingredient
        return $ Recipe title ingredients
        
