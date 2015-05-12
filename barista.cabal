@@ -17,9 +17,11 @@ cabal-version:       >=1.10
 
 executable barista
   main-is:             Main.hs
-  -- other-modules:       
+  other-modules:       Test
+  -- default-extensins:   
   -- other-extensions:    
   build-depends:       base >=4.7 && <4.8,
-                       parsec
+                       parsec,
+                       HUnit
   -- hs-source-dirs:      
   default-language:    Haskell2010
