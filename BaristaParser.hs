@@ -35,23 +35,24 @@ p <||> q = try p <|> q
 measureP :: Parser String
 measureP = string "ml" <||> string "mL" *> pure "ml"
 
-{-
-ingredientIndex :: Parser (Maybe Int)
-ingredientIndex = int -- this is not working
-      <|> (pure Nothing)
--}
+ingredientIndexP :: Parser (Maybe Int)
+ingredientIndexP = Just <$> int
+                  <|> (pure Nothing)
+
+annotationP :: Parser (Maybe [Annotation])
+annotationP = (pure Nothing)
 
 ingredient :: Parser Ingredient
 ingredient = do
-       --index <- ingredientIndex
-       index <- return Nothing
+       index <- ingredientIndexP
        char '-'
        volume <- skipWhitespace int
        char '`'
        measure <- skipWhitespace measureP
        ingredientName <- skipWhitespace keyword
+       annotations <- annotationP
        string "\r\n"
-       return $ Ingredient volume measure ingredientName index
+       return $ Ingredient volume measure ingredientName index annotations
 
 recipe :: Parser Recipe
 recipe = do
