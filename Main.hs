@@ -1,13 +1,11 @@
 module Main where
 
 import BaristaParser
+import Test
+
 import Text.ParserCombinators.Parsec
 
-simpleExample = unlines [
-     "Recipe Mocha\r",
-     "- 30`mL Steamed_Milk\r",
-     "- 60`mL Chocolate\r",
-     "- 60`mL Espresso\r"]
-
 main :: IO ()
-main = print $ parse recipe "" simpleExample
+main = do 
+     print $ parse recipe "" (fst Test.simpleExample)
+     print $ parse recipe "" (fst Test.numberedIngredients)

@@ -24,8 +24,8 @@ keyword = do c <- letter <|> char '_'
        <?> "keyword" -- "this is the name to use when printing an error message
 
 -- Parser combinator which skips whitespace from both sides
-lexeme :: Parser a -> Parser a
-lexeme p = ws *> p <* ws
+skipWhitespace :: Parser a -> Parser a
+skipWhitespace p = ws *> p <* ws
 
 -- If one parser doesn't work, try the other
 (<||>) :: Parser a -> Parser a -> Parser a
@@ -36,27 +36,29 @@ measureP :: Parser String
 measureP = (string "ml" *> (pure "ml")) -- (TODO how to compress these into 1 line)
       <||> (string "mL" *> (pure "ml")) -- both capital and lower case "L" parse to "ml"
 
--- ss is short for syntactic sugar!
-parseString :: String -> Parser (Maybe String)
-parseString s = (string s *> (pure . Just $ s)) <|> pure Nothing
+{-
+ingredientIndex :: Parser (Maybe Int)
+ingredientIndex = int -- this is not working
+      <|> (pure Nothing)
+-}
 
 ingredient :: Parser Ingredient
 ingredient = do
-       lexeme (parseString "- ")
-       volume <- lexeme int
-       lexeme (parseString "`")
-       measure <- lexeme measureP
-       ingredientName <- lexeme keyword
+       --index <- ingredientIndex
+       index <- return Nothing
+       char '-'
+       volume <- skipWhitespace int
+       char '`'
+       measure <- skipWhitespace measureP
+       ingredientName <- skipWhitespace keyword
        string "\r\n"
-       return $ Ingredient volume measure ingredientName
+       return $ Ingredient volume measure ingredientName index
 
 recipe :: Parser Recipe
 recipe = do
-       lexeme (parseString "Recipe")
-       title <- lexeme keyword
+       string "Recipe"
+       title <- skipWhitespace keyword
        string "\r\n"
        ingredients <- many1 ingredient
        return $ Recipe title ingredients
        
-
-
