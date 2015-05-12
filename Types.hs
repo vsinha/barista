@@ -1,6 +1,6 @@
 module Types where
 
-data Recipe = Recipe
+data Recipe = Recipe 
      { recipeName :: String
      , ingredients :: [Ingredient]
      } deriving Show
@@ -13,9 +13,18 @@ data Ingredient = Ingredient
      , annotations :: (Maybe [Annotation])
      } deriving Show
 
-data Measure = Milli 
+
+data Annotation = Mix 
+                | MixSource 
+                | Hold Degrees TempUnit
+                | AspirateSpeed 
+                | DispenseSpeed 
+  deriving (Eq, Show)
+
+type Degrees = Int
+
+data Measure = Liter | Milli | Micro 
   deriving (Eq, Ord, Enum, Show)
 
-data Annotation = Mix | MixSource | Hold | AspirateSpeed | DispenseSpeed 
-  deriving (Eq, Ord, Enum, Show)
-
+data TempUnit = C | F | K
+  deriving (Eq, Show)

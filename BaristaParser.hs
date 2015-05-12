@@ -22,6 +22,12 @@ int = read <$> many1 digit
 stringLike :: Parser String
 stringLike = char '"' *> many (noneOf ['\"', '\r', '\n']) <* char '"'
 
+-- Match the lowercase or uppercase form of 'c'
+--caseInsensitiveChar c = char (toLower c) <|> char (toUpper c)
+
+-- Match the string 's', accepting either lowercase or uppercase form of each character 
+--caseInsensitiveString s = try (mapM caseInsensitiveChar s) <?> "\"" ++ s ++ "\""
+
 -- TODO: parse so Special Words Start With Capital Letters
 keyword :: Parser String
 keyword = do c <- letter <|> char '_'
@@ -46,6 +52,16 @@ ingredientIndexP :: Parser (Maybe Int)
 ingredientIndexP = Just <$> int
                   <|> (pure Nothing)
 
+holdP :: Parser Annotation
+holdP = do 
+      string "hold" <||> string "Hold"
+      temp <- skipWhitespace int
+      char '`'
+      unit <- choice [string "K" *> pure K
+                     ,string "F" *> pure F
+                     ,string "C" *> pure C] -- pure FriedChicken
+      return $ Hold 5 C
+
 -- between square brackets [ ],
 -- attempt to apply one or more of the parsers for Annotation types, 
 -- each separated by a single comma an optional whitespace
@@ -53,7 +69,7 @@ annotationP :: Parser (Maybe [Annotation])
 annotationP = Just <$> ((between (char '[') (char ']')) $
             sepEndBy (choice . map try $ [string "mix_source" *> pure MixSource, 
                                           string "mix" *> pure Mix, 
-                                          string "hold" *> pure Hold,
+                                          holdP,
                                           string "aspirate_speed" *> pure AspirateSpeed,
                                           string "dispense_speed" *> pure DispenseSpeed]) 
             (skipWhitespace $ char ','))

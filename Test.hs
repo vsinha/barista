@@ -3,7 +3,6 @@ module Test where
 import Control.Applicative
 import Data.List
 import Test.HUnit
-import Test.QuickCheck
 import Text.ParserCombinators.Parsec
 
 import BaristaParser
@@ -48,7 +47,8 @@ test_ingredientNoEOL = ptests "For invalid single indexed ingredient"
 test_ingredientAnnotated = ptests "for an ingredient with an annotation"
                          ingredient
                          [( "1- 30`mL Steamed_Milk [mix]\r\n", "Ingredient {volume = 30, measure = Milli, ingredientName = \"Steamed_Milk\", index = Just 1, annotations = Just [Mix]}"),
-                          ( "- 60`mL Espresso [mix, mix_source, hold , aspirate_speed, dispense_speed]\r\n", "Ingredient {volume = 60, measure = Milli, ingredientName = \"Espresso\", index = Nothing, annotations = Just [Mix,MixSource,Hold,AspirateSpeed,DispenseSpeed]}") ] 
+                          ( "- 60`mL Espresso [mix, mix_source, aspirate_speed, dispense_speed]\r\n", "Ingredient {volume = 60, measure = Milli, ingredientName = \"Espresso\", index = Nothing, annotations = Just [Mix,MixSource,AspirateSpeed,DispenseSpeed]}"),
+                          ( "- 60`mL Espresso [hold 5`C]\r\n", "Ingredient {volume = 60, measure = Milli, ingredientName = \"Espresso\", index = Nothing, annotations = Just [Hold 5 C]}")] 
 
      
 numberedIngredients = (unlines [
