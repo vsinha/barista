@@ -52,7 +52,8 @@ ingredientIndexP :: Parser (Maybe Int)
 ingredientIndexP = Just <$> int
                   <|> (pure Nothing)
 
-holdP :: Parser Annotation
+-- parses the arguments for the Hold action
+holdP :: Parser Action
 holdP = do 
       string "hold" <||> string "Hold"
       temp <- skipWhitespace int

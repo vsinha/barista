@@ -10,15 +10,14 @@ data Ingredient = Ingredient
      , measure :: Measure
      , ingredientName :: String
      , index :: (Maybe Int)
-     , annotations :: (Maybe [Annotation])
+     , annotations :: (Maybe [Action])
      } deriving Show
 
-
-data Annotation = Mix 
-                | MixSource 
-                | Hold Degrees TempUnit
-                | AspirateSpeed 
-                | DispenseSpeed 
+data Action = Mix 
+            | MixSource 
+            | Hold Degrees TempUnit
+            | AspirateSpeed 
+            | DispenseSpeed 
   deriving (Eq, Show)
 
 type Degrees = Int
