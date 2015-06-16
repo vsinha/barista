@@ -20,7 +20,7 @@ simpleExample = (
      "- 30`mL Steamed_Milk\r",
      "- 60`mL Chocolate\r",
      "- 60`mL Espresso\r"],
-     "Recipe {recipeName = \"Mocha\", ingredients = [Ingredient {volume = 30, measure = Milli, ingredientName = \"Steamed_Milk\", index = Nothing, annotations = Nothing},Ingredient {volume = 60, measure = Milli, ingredientName = \"Chocolate\", index = Nothing, annotations = Nothing},Ingredient {volume = 60, measure = Milli, ingredientName = \"Espresso\", index = Nothing, annotations = Nothing}]}")
+     "Recipe {recipeName = \"Mocha\", clauses = [RecipeClause {ingredients = [Ingredient {volume = 30, measure = Milli, ingredientName = \"Steamed_Milk\", index = Nothing, annotations = Nothing},Ingredient {volume = 60, measure = Milli, ingredientName = \"Chocolate\", index = Nothing, annotations = Nothing},Ingredient {volume = 60, measure = Milli, ingredientName = \"Espresso\", index = Nothing, annotations = Nothing}], action = Nothing}]}")
 
 test_simpleInput = ptests "for the first recipe in the language spec" 
                           recipe 

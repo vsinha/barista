@@ -97,11 +97,17 @@ ingredient = do
        eol
        return $ Ingredient volume measure ingredientName index annotations
 
+recipeClause :: Parser RecipeClause
+recipeClause = do
+       ingredients <- many1 ingredient
+       -- actions <- many actionP
+       return $ RecipeClause ingredients Nothing
+
 recipe :: Parser Recipe
 recipe = do
        string "Recipe"
        title <- skipWhitespace keyword
        eol
-       ingredients <- many1 ingredient
-       return $ Recipe title ingredients
+       recipeClauses <- many1 recipeClause
+       return $ Recipe title recipeClauses 
        

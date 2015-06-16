@@ -2,8 +2,13 @@ module Types where
 
 data Recipe = Recipe 
      { recipeName :: String
-     , ingredients :: [Ingredient]
+     , clauses :: [RecipeClause]
      } deriving Show
+
+data RecipeClause = RecipeClause 
+    { ingredients :: [Ingredient]
+    , action :: (Maybe [Action])
+    } deriving Show
 
 data Ingredient = Ingredient 
      { volume :: Int
