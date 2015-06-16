@@ -57,24 +57,33 @@ holdP :: Parser Action
 holdP = do 
       string "hold" <||> string "Hold"
       temp <- skipWhitespace int
-      char '`'
+      char '`' 
       unit <- choice [string "K" *> pure K
                      ,string "F" *> pure F
                      ,string "C" *> pure C] -- pure FriedChicken
       return $ Hold 5 C
 
 -- between square brackets [ ],
--- attempt to apply one or more of the parsers for Annotation types, 
+-- attempt to apply one or more of the parsers for Action types, 
 -- each separated by a single comma an optional whitespace
-annotationP :: Parser (Maybe [Annotation])
+annotationP :: Parser (Maybe [Action])
 annotationP = Just <$> ((between (char '[') (char ']')) $
-            sepEndBy (choice . map try $ [string "mix_source" *> pure MixSource, 
-                                          string "mix" *> pure Mix, 
-                                          holdP,
-                                          string "aspirate_speed" *> pure AspirateSpeed,
-                                          string "dispense_speed" *> pure DispenseSpeed]) 
+            sepEndBy actionItemP           
             (skipWhitespace $ char ','))
       <|> (pure Nothing)
+
+actionItemP :: Parser Action
+actionItemP = (choice . map try $ [string "mix_source" *> pure MixSource, 
+                                   string "mix" *> pure Mix, 
+                                   holdP,
+                                   string "aspirate_speed" *> pure AspirateSpeed,
+                                   string "dispense_speed" *> pure DispenseSpeed]) 
+
+actionP :: Parser Action
+actionP = do
+      skipWhitespace . char $ '!'
+      actionItem <- actionItemP
+      return actionItem
 
 ingredient :: Parser Ingredient
 ingredient = do
