@@ -7,7 +7,7 @@ data Recipe = Recipe
 
 data RecipeClause = RecipeClause 
     { ingredients :: [Ingredient]
-    , action :: (Maybe [Action])
+    , actions :: (Maybe [Action])
     } deriving Show
 
 data Ingredient = Ingredient 

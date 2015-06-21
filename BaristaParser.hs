@@ -39,11 +39,11 @@ keyword = do c <- letter <|> char '_'
 skipWhitespace :: Parser a -> Parser a
 skipWhitespace p = ws *> p <* ws
 
--- If one parser doesn't work, try the other
+-- Parser combinator: If one parser doesn't work, try the other
 (<||>) :: Parser a -> Parser a -> Parser a
 p <||> q = try p <|> q
 
--- Parse a measurement unit
+-- Parse a liquid measurement unit
 measureP :: Parser Measure
 measureP = string "ml" <||> string "mL" *> pure Milli
 
@@ -63,6 +63,17 @@ holdP = do
                      ,string "C" *> pure C] -- pure FriedChicken
       return $ Hold 5 C
 
+
+-- both annotationP and actionP use actionItemP, which can be one of 
+-- the keywords mix, mix_source, etc
+actionItemP :: Parser Action
+actionItemP = (choice . map try $ [string "mix_source" *> pure MixSource, 
+                                   string "mix" *> pure Mix, 
+                                   holdP,
+                                   string "aspirate_speed" *> pure AspirateSpeed,
+                                   string "dispense_speed" *> pure DispenseSpeed]) 
+
+-- annotations go with ingredients
 -- between square brackets [ ],
 -- attempt to apply one or more of the parsers for Action types, 
 -- each separated by a single comma an optional whitespace
@@ -72,21 +83,8 @@ annotationP = Just <$> ((between (char '[') (char ']')) $
             (skipWhitespace $ char ','))
       <|> (pure Nothing)
 
-actionItemP :: Parser Action
-actionItemP = (choice . map try $ [string "mix_source" *> pure MixSource, 
-                                   string "mix" *> pure Mix, 
-                                   holdP,
-                                   string "aspirate_speed" *> pure AspirateSpeed,
-                                   string "dispense_speed" *> pure DispenseSpeed]) 
-
-actionP :: Parser Action
-actionP = do
-      skipWhitespace . char $ '!'
-      actionItem <- actionItemP
-      return actionItem
-
-ingredient :: Parser Ingredient
-ingredient = do
+ingredientLine :: Parser Ingredient
+ingredientLine = do
        index <- ingredientIndexP
        char '-'
        volume <- skipWhitespace int
@@ -97,11 +95,20 @@ ingredient = do
        eol
        return $ Ingredient volume measure ingredientName index annotations
 
+-- actions go with recipe clauses
+actionLine :: Parser Action
+actionLine = do
+      skipWhitespace . char $ '!'
+      actionItem <- actionItemP
+      eol
+      return actionItem
+
 recipeClause :: Parser RecipeClause
 recipeClause = do
-       ingredients <- many1 ingredient
-       -- actions <- many actionP
-       return $ RecipeClause ingredients Nothing
+       ingredients <- many1 ingredientLine
+       -- parse either a list of actions or return nothing
+       actions <- (Just <$> many1 actionLine) <|> (pure Nothing)
+       return $ RecipeClause ingredients actions
 
 recipe :: Parser Recipe
 recipe = do
