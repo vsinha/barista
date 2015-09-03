@@ -4,11 +4,15 @@ White paper [here](https://gist.github.com/Cixelyn/775c557109d638a34988)
 
 ---
 
-To build: `cabal run`
+To build: 
+```
+$ cabal install
+$ cabal run
+```
 
 To run tests, first interactively run `Test.hs` using `ghci`, and then invoke the `runtests` function
 ```bash
-~/dev/haskell/barista [master+] ∴ ghci Test.hs
+$ ghci Test.hs
 GHCi, version 7.8.3: http://www.haskell.org/ghc/  :? for help
 [1 of 3] Compiling Types            ( Types.hs, interpreted )
 [2 of 3] Compiling BaristaParser    ( BaristaParser.hs, interpreted )
