@@ -1,5 +1,9 @@
 ## Barista
 
+White paper [here](https://gist.github.com/Cixelyn/775c557109d638a34988)
+
+---
+
 To build: `cabal run`
 
 To run tests, first interactively run `Test.hs` using `ghci`, and then invoke the `runtests` function
